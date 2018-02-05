@@ -12,7 +12,9 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.hadoop.fs.Path;
@@ -89,11 +91,17 @@ public class MySimpleMapReduceJob extends Configured implements Tool {
 
 		// 2. Set mapper and reducer classes
 		job.setMapperClass(MyMapper.class);
-		job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(IntWritable.class);
+
 
 		// 3. Set input and output format, mapper output key and value classes, and final output key and value classes
+		job.setCombinerClass(MyReducer.class);
 		job.setReducerClass(MyReducer.class);
+
+		job.setInputFormatClass(TextInputFormat.class);
+
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(IntWritable.class);
+		job.setOutputFormatClass(TextOutputFormat.class);
 
 		// 4. Set input and output paths; remember, these will be HDFS paths or URLs
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
