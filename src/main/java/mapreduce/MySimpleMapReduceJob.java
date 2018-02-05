@@ -36,7 +36,6 @@ public class MySimpleMapReduceJob extends Configured implements Tool {
 
 		@Override
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-			super.map(key, value, context);
 			String line = value.toString();
 			System.out.println("VALUE: " + line);
 			StringTokenizer tokenizer = new StringTokenizer(line);
