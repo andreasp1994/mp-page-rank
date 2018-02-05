@@ -97,7 +97,7 @@ public class MySimpleMapReduceJob extends Configured implements Tool {
 
 		// 4. Set input and output paths; remember, these will be HDFS paths or URLs
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
-		FileOutputFormat.setOutputPath(job, new Path(job.getJobName() + "_output"));
+		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
 		// 5. Set other misc configuration parameters (#reducer tasks, counters, env variables, etc.)
 
