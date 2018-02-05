@@ -81,7 +81,7 @@ public class MySimpleMapReduceJob extends Configured implements Tool {
 	// Your main Driver method. Note: everything in this method runs locally at the client.
 	public int run(String[] args) throws Exception {
 		// 0. Instantiate a Job object; remember to pass the Driver's configuration on to the job
-		getConf().set("textinputformat.record.delimiter","\n\n");
+//		getConf().set("textinputformat.record.delimiter","\n\n");
 		Job job = Job.getInstance(getConf());
 
 		// 1. Set the jar name in the job's conf; thus the Driver will know which file to send to the cluster
