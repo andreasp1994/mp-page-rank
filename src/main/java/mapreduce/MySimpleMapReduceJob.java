@@ -80,37 +80,18 @@ public class MySimpleMapReduceJob extends Configured implements Tool {
 
 	// Your main Driver method. Note: everything in this method runs locally at the client.
 	public int run(String[] args) throws Exception {
-		// 0. Instantiate a Job object; remember to pass the Driver's configuration on to the job
-//		getConf().set("textinputformat.record.delimiter","\n\n");
-		Job job = Job.getInstance(getConf());
-
-		// 1. Set the jar name in the job's conf; thus the Driver will know which file to send to the cluster
+		Job job = Job.getInstance(getConf(), "WordCount-v1");
 		job.setJarByClass(MySimpleMapReduceJob.class);
-
-		job.setJobName("MyWordCount(" + args[0] + ")");
-
-		// 2. Set mapper and reducer classes
 		job.setMapperClass(MyMapper.class);
-
-
-		// 3. Set input and output format, mapper output key and value classes, and final output key and value classes
 		job.setCombinerClass(MyReducer.class);
 		job.setReducerClass(MyReducer.class);
-
-//		job.setInputFormatClass(TextInputFormat.class);
-
+		job.setInputFormatClass(TextInputFormat.class);
+		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
-
-		// 4. Set input and output paths; remember, these will be HDFS paths or URLs
-		FileInputFormat.setInputPaths(job, new Path(args[0]));
+		job.setOutputFormatClass(TextOutputFormat.class);
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
-
-		// 5. Set other misc configuration parameters (#reducer tasks, counters, env variables, etc.)
-
-		// 6. Finally, submit the job to the cluster and wait for it to complete; set param to false if you don't want to see progress reports
-		boolean succeeded = job.waitForCompletion(true);
-		return (succeeded ? 0 : 1);
+		return (job.waitForCompletion(true) ? 0 : 1);
 	}
 
 	public static void main(String[] args) throws Exception {
