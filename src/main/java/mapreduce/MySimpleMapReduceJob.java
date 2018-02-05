@@ -23,7 +23,7 @@ import org.apache.hadoop.fs.Path;
 public class MySimpleMapReduceJob extends Configured implements Tool {
 
 	// Your mapper class; remember to set the input and output key/value class appropriately in the <...> part below.
-	static class MyMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+	static class MyMapper extends Mapper<Text, Text, Text, IntWritable> {
 
 		private final static IntWritable one = new IntWritable(1);
 		private Text word = new Text();
@@ -35,7 +35,7 @@ public class MySimpleMapReduceJob extends Configured implements Tool {
 		}
 
 		@Override
-		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+		protected void map(Text key, Text value, Context context) throws IOException, InterruptedException {
 			super.map(key, value, context);
 			String line = value.toString();
 			System.out.println("VALUE: " + line);
