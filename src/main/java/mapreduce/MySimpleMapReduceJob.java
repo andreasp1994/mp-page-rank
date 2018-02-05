@@ -101,7 +101,6 @@ public class MySimpleMapReduceJob extends Configured implements Tool {
 
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
-		job.setOutputFormatClass(TextOutputFormat.class);
 
 		// 4. Set input and output paths; remember, these will be HDFS paths or URLs
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
