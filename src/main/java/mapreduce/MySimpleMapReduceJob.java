@@ -28,6 +28,7 @@ public class MySimpleMapReduceJob extends Configured implements Tool {
 
 	// Your mapper class; remember to set the input and output key/value class appropriately in the <...> part below.
 	static class MyMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+		private Logger logger = Logger.getLogger(MyMapper.class);
 		Log log = LogFactory.getLog(MyMapper.class);
 
 		private final static IntWritable one = new IntWritable(1);
@@ -42,7 +43,9 @@ public class MySimpleMapReduceJob extends Configured implements Tool {
 		@Override
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 			String line = value.toString();
-			log.info(line);
+			logger.info("logger value:"+ line);
+			log.info("logger value:"+ line);
+
 			StringTokenizer tokenizer = new StringTokenizer(line);
 			while (tokenizer.hasMoreTokens()) {
 				word.set(tokenizer.nextToken());
