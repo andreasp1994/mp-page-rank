@@ -97,7 +97,7 @@ public class MySimpleMapReduceJob extends Configured implements Tool {
 		job.setCombinerClass(MyReducer.class);
 		job.setReducerClass(MyReducer.class);
 
-		job.setInputFormatClass(TextInputFormat.class);
+//		job.setInputFormatClass(TextInputFormat.class);
 
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
