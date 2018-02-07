@@ -20,10 +20,10 @@ public class PreprocessingReducer extends Reducer<Text, Text, Text, Text> {
 	@Override
 	protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 		Set<String> linksOut = new HashSet<String>();
-		for (Text value: values)
-			if(!value.toString().equals(""))
-				linksOut.add(value.toString());
-		Text pageRankAndLinks = new Text("1###" + StringUtils.join(linksOut, " "));
+		for (Text value: values) {
+			linksOut.add(value.toString());
+		}
+		Text pageRankAndLinks = new Text("1###" + StringUtils.join(linksOut, " ").trim());
 		context.write(key, pageRankAndLinks);
 	}
 	
