@@ -1,39 +1,35 @@
 package pagerank;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.Reducer.Context;
 
-import writables.PageRankWritable;
-
-public class PageRankReducer extends Reducer<Text, PageRankWritable, Text, PageRankWritable> {
+public class PageRankReducer extends Reducer<Text, Text, Text, Text> {
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
-		super.setup(context);
+//		super.setup(context);
 		// ...
 		
 	}
 	
 	@Override
-	protected void reduce(Text key, Iterable<PageRankWritable> values, Context context) throws IOException, InterruptedException {
+	protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 		double pageRankSum = 0;
-		PageRankWritable out = null;
-		Set<String> linksOut = new HashSet<String>();
-		for(PageRankWritable pageRank : values) {
-			if (pageRank.getLinksOut().toString().equals("")) {
-				pageRankSum += pageRank.getPageRank().get();
-			} else {
-				out = pageRank;
-			}
+		List<String> linksOut = new ArrayList<String>();
+		for (Text value : values) {
+			double pageRank = Double.valueOf(value.toString().split("###")[0]);
+			int lengthOfLinks = Integer.valueOf(value.toString().split("###")[1]);
+			String fromLink = value.toString().split("###")[2];
+			pageRankSum += (pageRank/lengthOfLinks);
+			linksOut.add(fromLink);
 		}
-		out.setPageRank(new DoubleWritable(0.15+0.85*pageRankSum));
-		context.write(key, out);
+		double finalPageRank = 0.15+0.85*pageRankSum;
+		context.write(key, new Text( String.valueOf(finalPageRank) + "###" + StringUtils.join(linksOut, " ")));
+		
 	}
 	
 	@Override

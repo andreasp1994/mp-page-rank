@@ -5,13 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-import writables.PageRankWritable;
-
-public class PreprocessingReducer extends Reducer<Text, Text, Text, PageRankWritable> {
+public class PreprocessingReducer extends Reducer<Text, Text, Text, Text> {
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
 		super.setup(context);
@@ -25,8 +22,8 @@ public class PreprocessingReducer extends Reducer<Text, Text, Text, PageRankWrit
 		Set<String> linksOut = new HashSet<String>();
 		for (Text value: values)
 			linksOut.add(value.toString());
-		PageRankWritable pageRank = new PageRankWritable(new DoubleWritable(1.0), new Text(StringUtils.join(linksOut, " ")));
-		context.write(key, pageRank);
+		Text pageRankAndLinks = new Text("1###" + StringUtils.join(linksOut, " "));
+		context.write(key, pageRankAndLinks);
 	}
 	
 	@Override

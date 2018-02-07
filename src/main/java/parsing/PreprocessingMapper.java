@@ -18,7 +18,7 @@ public class PreprocessingMapper extends Mapper<LongWritable, Text, Text, Text> 
 		String revision = value.toString();
 		String[] lines = revision.split(System.getProperty("line.separator"));
 		Text articleTitle = new Text(lines[0].split(" ")[3]);
-		String linksOut = lines[3];
+		String linksOut = lines[3].replace("\t", " ");
 		for(String aTitle : linksOut.split(" ")) {
 			if (aTitle.equals("MAIN")) continue;
 			context.write(articleTitle, new Text(aTitle));
