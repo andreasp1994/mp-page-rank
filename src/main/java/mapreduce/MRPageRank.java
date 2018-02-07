@@ -30,7 +30,7 @@ public class MRPageRank extends Configured implements Tool {
 		}
 //		boolean succeeded = true;
 		System.out.println("Parsing Job Finished!");
-		int numLoops = 5;
+		int numLoops = Integer.valueOf(args[2]);
 		for (int i = 0; i < numLoops; i++) {
 			succeeded = this.runPageRankJob(args[1], i);
 			if (!succeeded) {
