@@ -22,6 +22,7 @@ public class PageRankMapper extends Mapper<Text, Text, Text, Text> {
 		for(String article : linksOutArr) {
 			context.write(new Text(article), new Text(pageRank + "###" + linksOutLength + "###" + key.toString()));
 		}
+		context.write(key, new Text("$LINKSOUT$" + linksOut));
 	}
 	
 	@Override

@@ -19,16 +19,19 @@ public class PageRankReducer extends Reducer<Text, Text, Text, Text> {
 	@Override
 	protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 		double pageRankSum = 0;
-		List<String> linksOut = new ArrayList<String>();
+		String linksOut = "";
 		for (Text value : values) {
+			if (value.toString().startsWith("$LINKSOUT$")) {
+				linksOut = value.toString().substring("$LINKSOUT$".length());
+				continue;
+			}
 			double pageRank = Double.valueOf(value.toString().split("###")[0]);
 			int lengthOfLinks = Integer.valueOf(value.toString().split("###")[1]);
 			String fromLink = value.toString().split("###")[2];
-			pageRankSum += (pageRank/lengthOfLinks);
-			linksOut.add(fromLink);
+			pageRankSum += (pageRank/lengthOfLinks);	
 		}
 		double finalPageRank = 0.15+0.85*pageRankSum;
-		context.write(key, new Text( String.valueOf(finalPageRank) + "###" + StringUtils.join(linksOut, " ")));
+		context.write(key, new Text( String.valueOf(finalPageRank) + "###" + linksOut));
 		
 	}
 	
