@@ -11,7 +11,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 public class PageRankReducer extends Reducer<Text, Text, Text, Text> {
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
-//		super.setup(context);
+		super.setup(context);
 		// ...
 		
 	}
