@@ -32,7 +32,6 @@ public class PageRankReducer extends Reducer<Text, Text, Text, Text> {
 		}
 		double finalPageRank = 0.15+0.85*pageRankSum;
 		context.write(key, new Text( String.valueOf(finalPageRank) + "###" + linksOut));
-		
 	}
 	
 	@Override
