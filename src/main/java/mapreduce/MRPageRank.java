@@ -16,6 +16,7 @@ import org.apache.hadoop.util.ToolRunner;
 import formatoutput.FormatOutputMapper;
 import pagerank.PageRankMapper;
 import pagerank.PageRankReducer;
+import parsing.PreprocessingCombiner;
 import parsing.PreprocessingMapper;
 import parsing.PreprocessingReducer;
 
@@ -54,7 +55,7 @@ public class MRPageRank extends Configured implements Tool {
 		Job job = Job.getInstance(conf1, "PageRank_Preprocessing");
 		job.setJarByClass(MRPageRank.class);
 		job.setMapperClass(PreprocessingMapper.class);
-//		job.setCombinerClass(PreprocessingReducer.class);
+		job.setCombinerClass(PreprocessingCombiner.class);
 		job.setReducerClass(PreprocessingReducer.class);
 		job.setInputFormatClass(TextInputFormat.class);
 		FileInputFormat.setInputPaths(job, new Path(inputPath));

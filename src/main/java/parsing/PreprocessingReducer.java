@@ -12,11 +12,8 @@ public class PreprocessingReducer extends Reducer<Text, Text, Text, Text> {
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
 		super.setup(context);
-		// ...
 	}
 	
-	// The main reduce() function; the input key/value classes must match the first two above, and the key/value classes in your emit() statement must match the latter two above.
-	// Make sure that the output key/value classes also match those set in your job's configuration (see below).
 	@Override
 	protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 		Set<String> linksOut = new HashSet<String>();
