@@ -1,10 +1,7 @@
 package pagerank;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
@@ -12,8 +9,6 @@ public class PageRankReducer extends Reducer<Text, Text, Text, Text> {
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
 		super.setup(context);
-		// ...
-		
 	}
 	
 	@Override
@@ -27,7 +22,6 @@ public class PageRankReducer extends Reducer<Text, Text, Text, Text> {
 			}
 			double pageRank = Double.valueOf(value.toString().split("###")[0]);
 			int lengthOfLinks = Integer.valueOf(value.toString().split("###")[1]);
-			String fromLink = value.toString().split("###")[2];
 			pageRankSum += (pageRank/lengthOfLinks);	
 		}
 		double finalPageRank = 0.15+0.85*pageRankSum;
@@ -36,7 +30,6 @@ public class PageRankReducer extends Reducer<Text, Text, Text, Text> {
 	
 	@Override
 	protected void cleanup(Context context) throws IOException, InterruptedException {
-		// ...
 		super.cleanup(context);
 	} 
 }

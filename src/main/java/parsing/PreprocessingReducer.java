@@ -1,6 +1,9 @@
 package parsing;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,27 +12,48 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
 public class PreprocessingReducer extends Reducer<Text, Text, Text, Text> {
+	SimpleDateFormat format = new SimpleDateFormat(
+		    "yyyy-MM-dd'T'HH:mm:ss'Z'");
+	
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
 		super.setup(context);
-		// ...
 	}
 	
-	// The main reduce() function; the input key/value classes must match the first two above, and the key/value classes in your emit() statement must match the latter two above.
-	// Make sure that the output key/value classes also match those set in your job's configuration (see below).
 	@Override
 	protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-		Set<String> linksOut = new HashSet<String>();
+		Date revisionDate = new Date(0);
+		String revisionDateStr;
+		Date latestDate = new Date(0);
+		String latestOutLinks = "";
+		String[] valueFields;
 		for (Text value: values) {
-			linksOut.add(value.toString());
+			try {	// Surround with try and catch in case date is not formatted correctly.
+				valueFields = value.toString().split("###");
+				revisionDateStr = valueFields[0];
+				revisionDate = format.parse(revisionDateStr);
+				if (revisionDate.compareTo(latestDate) > 0) {
+					latestDate = revisionDate;
+					latestOutLinks = valueFields[1];
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 		}
-		Text pageRankAndLinks = new Text("1###" + StringUtils.join(linksOut, " ").trim());
+		Set<String> parsedLinks = new HashSet<String>();
+		for(String outLink : latestOutLinks.split("\\s+")) {
+			if (outLink.equals("MAIN")) continue;
+			if (outLink.indexOf(" ") > 0) {
+				System.out.println("AA");
+			}
+			parsedLinks.add(outLink);
+		}
+		Text pageRankAndLinks = new Text("1.0###" + StringUtils.join(parsedLinks, " ").trim());
 		context.write(key, pageRankAndLinks);
 	}
 	
 	@Override
 	protected void cleanup(Context context) throws IOException, InterruptedException {
-		// ...
 		super.cleanup(context);
 	}
 }

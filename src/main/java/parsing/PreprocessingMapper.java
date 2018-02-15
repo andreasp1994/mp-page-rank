@@ -17,17 +17,15 @@ public class PreprocessingMapper extends Mapper<LongWritable, Text, Text, Text> 
 	protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 		String revision = value.toString();
 		String[] lines = revision.split(System.getProperty("line.separator"));
-		Text articleTitle = new Text(lines[0].split(" ")[3]);
-		String linksOut = lines[3].replace("\t", " ");
-		for(String aTitle : linksOut.split("\\s+")) {
-			if (aTitle.equals("MAIN")) continue;
-			context.write(articleTitle, new Text(aTitle));
-		}
+		String[] articleFields = lines[0].split(" ");
+		Text articleTitle = new Text(articleFields[3]);
+		String revisionDateStr = articleFields[4];
+		String linksOut = lines[3];
+		context.write(new Text(articleTitle), new Text(revisionDateStr + "###" + linksOut));
 	}
 	
 	@Override
 	protected void cleanup(Context context) throws IOException, InterruptedException {
-		// ...
 		super.cleanup(context);
 	}
 
