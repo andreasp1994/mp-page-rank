@@ -12,8 +12,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
 public class PreprocessingReducer extends Reducer<Text, Text, Text, Text> {
-	SimpleDateFormat format = new SimpleDateFormat(
-		    "yyyy-MM-dd'T'HH:mm:ss'Z'");
+	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
@@ -43,9 +42,6 @@ public class PreprocessingReducer extends Reducer<Text, Text, Text, Text> {
 		Set<String> parsedLinks = new HashSet<String>();
 		for(String outLink : latestOutLinks.split("\\s+")) {
 			if (outLink.equals("MAIN")) continue;
-			if (outLink.indexOf(" ") > 0) {
-				System.out.println("AA");
-			}
 			parsedLinks.add(outLink);
 		}
 		Text pageRankAndLinks = new Text("1.0###" + StringUtils.join(parsedLinks, " ").trim());
