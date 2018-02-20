@@ -4,14 +4,11 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class PreprocessingReducer extends Reducer<Text, Text, Text, Text> {
+public class PreprocessingCombiner extends Reducer<Text, Text, Text, Text> {
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	Text valueText = new Text();
 	
@@ -40,12 +37,7 @@ public class PreprocessingReducer extends Reducer<Text, Text, Text, Text> {
 				e.printStackTrace();
 			}
 		}
-		Set<String> parsedLinks = new HashSet<String>();
-		for(String outLink : latestOutLinks.split("\\s+")) {
-			if (outLink.equals("MAIN")) continue;
-			parsedLinks.add(outLink);
-		}
-		valueText.set("1.0###" + StringUtils.join(parsedLinks, " ").trim());
+		valueText.set(format.format(latestDate) + "###" + latestOutLinks);
 		context.write(key, valueText);
 	}
 	

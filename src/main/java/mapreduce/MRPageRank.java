@@ -14,8 +14,10 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import formatoutput.FormatOutputMapper;
+import pagerank.PageRankCombiner;
 import pagerank.PageRankMapper;
 import pagerank.PageRankReducer;
+import parsing.PreprocessingCombiner;
 import parsing.PreprocessingMapper;
 import parsing.PreprocessingReducer;
 
@@ -51,11 +53,11 @@ public class MRPageRank extends Configured implements Tool {
 	public boolean runParsingJob(String inputPath, String outputPath) throws Exception {
 		Configuration conf1 = getConf();
 		conf1.set("textinputformat.record.delimiter", "\n\n");
-		conf1.setBoolean("mapred.compress.map.output", true);
+		conf1.setBoolean("mapreduce.map.output.compress", true);
 		Job job = Job.getInstance(conf1, "PageRank_Preprocessing");
 		job.setJarByClass(MRPageRank.class);
 		job.setMapperClass(PreprocessingMapper.class);
-//		job.setCombinerClass(PreprocessingReducer.class);
+		job.setCombinerClass(PreprocessingCombiner.class);
 		job.setReducerClass(PreprocessingReducer.class);
 		job.setInputFormatClass(TextInputFormat.class);
 		FileInputFormat.setInputPaths(job, new Path(inputPath));
@@ -69,10 +71,11 @@ public class MRPageRank extends Configured implements Tool {
 	public boolean runPageRankJob(String inputPath, int iter) throws Exception {
 		Configuration conf2 = getConf();
 		conf2.set("mapreduce.input.keyvaluelinerecordreader.key.value.separator", "\t");
-		conf2.setBoolean("mapred.compress.map.output", true);
+		conf2.setBoolean("mapreduce.map.output.compress", true);
 	    Job job2 = Job.getInstance(conf2, "PageRank_Calculate");
 	    job2.setJarByClass(MRPageRank.class);
 		job2.setMapperClass(PageRankMapper.class);
+		job2.setCombinerClass(PageRankCombiner.class);
 		job2.setReducerClass(PageRankReducer.class);
 		job2.setInputFormatClass(KeyValueTextInputFormat.class);
 		if(iter == 0) {
@@ -90,7 +93,7 @@ public class MRPageRank extends Configured implements Tool {
 	public boolean runFormatOutputJob(String inputPath, int lastIter) throws Exception {
 		Configuration conf2 = getConf();
 		conf2.set("mapreduce.input.keyvaluelinerecordreader.key.value.separator", "\t");
-		conf2.setBoolean("mapred.compress.map.output", true);
+		conf2.setBoolean("mapreduce.map.output.compress", true);
 	    Job job2 = Job.getInstance(conf2, "PageRank_FormatOutput");
 	    job2.setJarByClass(MRPageRank.class);
 		job2.setMapperClass(FormatOutputMapper.class);

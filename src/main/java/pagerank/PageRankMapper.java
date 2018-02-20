@@ -6,6 +6,8 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 public class PageRankMapper extends Mapper<Text, Text, Text, Text> {
+	Text keyArticleTitle = new Text();
+	Text valueText = new Text();
 	
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
@@ -21,9 +23,13 @@ public class PageRankMapper extends Mapper<Text, Text, Text, Text> {
 			String[] linksOutArr = linksOut.split(" ");
 			int linksOutLength = linksOutArr.length;
 			for(String article : linksOutArr) {
-				context.write(new Text(article), new Text(pageRank + "###" + linksOutLength));
+				keyArticleTitle.set(article);
+				double contribution = Double.valueOf(pageRank)/linksOutLength;
+				valueText.set(String.valueOf(contribution));
+				context.write(keyArticleTitle, valueText);
 			}
-			context.write(key, new Text("$LINKSOUT$" + linksOut));
+			valueText.set("$LINKSOUT$" + linksOut);
+			context.write(key, valueText);
 		}
 	}
 	
